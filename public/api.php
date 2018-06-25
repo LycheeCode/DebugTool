@@ -126,6 +126,21 @@ switch ($params["MsgType"])
 $url = Sign::url($params["url"], Sign::generate($params["token"])) . "&openid=" . $params["openid"];
 
 $http = new Http;
-$result = $http->postRaw($url, $msg->toXML());
+$reply = $http->postRaw($url, $msg->toXML());
 
-$reply = Message\Auto::init($result);
+if ($reply == "")
+{
+    return Response::succ("");
+}
+else
+{
+    try
+    {
+        $replyMsg = Message\Auto::init($reply);
+    }
+    catch (\Exception $e)
+    {
+        return Response::fail(40003, "响应数据不合法");
+    }
+}
+return Response::succ($replyMsg->toArray());
