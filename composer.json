@@ -1,6 +1,6 @@
 {
     "require": {
-        "lychee/message": "^0.1.*"
+        "lychee/message": "^0.1"
     },
     "autoload": {
         "psr-4": {
