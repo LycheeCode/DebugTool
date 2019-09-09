@@ -15,7 +15,7 @@ class Http
     * @access public
     * @return void
     */
-    function __construct()
+    public function __construct()
     {
         $this->ch = curl_init();
     }
@@ -100,15 +100,11 @@ class Http
         $result = curl_exec($this->ch);
         
         $header_text = substr($result, 0, strpos($result, "\r\n\r\n"));
-        foreach (explode("\r\n", $header_text) as $i => $line)
-        {
-            if ($i === 0)
-            {
+        foreach (explode("\r\n", $header_text) as $i => $line) {
+            if ($i === 0) {
                 $headers['http_code'] = $line;
-            }
-            else
-            {
-                list ($key, $value) = explode(': ', $line);
+            } else {
+                list($key, $value) = explode(': ', $line);
     
                 $headers[$key] = $value;
             }

@@ -13,12 +13,10 @@ class Sign
      */
     public static function generate(string $token, string $timestamp = null, string $nonce = null): array
     {
-        if (is_null($timestamp))
-        {
+        if (is_null($timestamp)) {
             $timestamp = time();
         }
-        if (is_null($nonce))
-        {
+        if (is_null($nonce)) {
             $nonce = self::randStr();
         }
         $arr = [$token, $timestamp, $nonce];
@@ -51,12 +49,9 @@ class Sign
     public static function url(string $url, array $signData): string
     {
         list($timestamp, $nonce, $signature) = $signData;
-        if (strpos($url, "?") === false)
-        {
+        if (strpos($url, "?") === false) {
             $url .= "?" . http_build_query(compact("timestamp", "nonce", "signature"));
-        }
-        else
-        {
+        } else {
             $url .= "&" . http_build_query(compact("timestamp", "nonce", "signature"));
         }
         return $url;
@@ -72,8 +67,7 @@ class Sign
     {
         $dict = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456798";
         $randStr = "";
-        for ($i = 0; $i < $length; $i++)
-        {
+        for ($i = 0; $i < $length; $i++) {
             $randStr .= $dict[mt_rand(0, strlen($dict) - 1)];
         }
         return $randStr;

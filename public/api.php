@@ -7,24 +7,20 @@ use Helpers\Response;
 use Helpers\Sign;
 
 $params = json_decode(file_get_contents("php://input"), true);
-if (! $params)
-{
+if (! $params) {
     return Response::fail(40000, "参数不能为空");
 }
 
 $requiredParams = [
     "appid", "token", "mp_username", "url", "MsgType", "Msg"
 ];
-foreach ($requiredParams as $key)
-{
-    if (! isset($params[$key]))
-    {
+foreach ($requiredParams as $key) {
+    if (! isset($params[$key])) {
         return Response::fail(40001, "缺失参数：" . $key);
     }
 }
 
-switch ($params["MsgType"])
-{
+switch ($params["MsgType"]) {
     case 'text':
         $msg = new Message\Text;
         $msg->setToUserName($params["mp_username"])
@@ -35,12 +31,10 @@ switch ($params["MsgType"])
         break;
 
     case 'event':
-        if (! isset($params['Event']))
-        {
+        if (! isset($params['Event'])) {
             return Response::fail(40001, "缺少参数： Event");
         }
-        switch ($params['Event'])
-        {
+        switch ($params['Event']) {
             case 'Click':
                 $msg = new Message\Event\Click;
                 $msg->setToUserName($params["mp_username"])
@@ -77,8 +71,7 @@ switch ($params["MsgType"])
                     ->setFromUserName($params["openid"])
                     ->setCreateTime(time())
                     ->setMsgId(time());
-                if (isset($params['Msg']['EventKey']) && isset($params['Msg']['Ticket']))
-                {
+                if (isset($params['Msg']['EventKey']) && isset($params['Msg']['Ticket'])) {
                     $msg->setEventKey($params['Msg']['EventKey'])
                         ->setTicket($params['Msg']['Ticket']);
                 }
@@ -128,18 +121,12 @@ $url = Sign::url($params["url"], Sign::generate($params["token"])) . "&openid=" 
 $http = new Http;
 $reply = $http->postRaw($url, $msg->toXML());
 
-if ($reply == "")
-{
+if ($reply == "") {
     return Response::succ("");
-}
-else
-{
-    try
-    {
+} else {
+    try {
         $replyMsg = Message\Auto::init($reply);
-    }
-    catch (\Exception $e)
-    {
+    } catch (\Exception $e) {
         return Response::fail(40003, "响应数据不合法");
     }
 }
